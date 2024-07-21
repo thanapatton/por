@@ -1,0 +1,324 @@
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+<script
+  src="https://code.jquery.com/jquery-3.7.1.slim.min.js"
+  integrity="sha256-kmHvs0B+OpCW5GVHUNjv9rOmY0IvSIRcf7zGUDTDQM8="
+  crossorigin="anonymous"
+></script>
+<html>
+  <head>
+    <title>Polls</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <nav class="navbar">
+      <div class="container-fluid"><a href="{% url 'read' %}">read</a></div>
+    </nav>
+    <!-- Container to center and horizontally pad your site's content -->
+    <div
+      class="container d-flex justify-content-center align-items-center"
+      style="height: 100vh"
+    >
+      <!-- Card component -->
+      <div class="text-center">
+        <div id="start">
+          <button type="button" class="btn btn-primary" onclick="test1()">
+            คลิกเพื่อเริ่มทดสอบ
+          </button>
+        </div>
+        <div id="board">
+          <div class="row">
+            <text id="solution1"></text>
+          </div>
+          <div id="askWord" style="display: none">
+            <div>
+              <button type="button" class="btn btn-primary ask">a</button>
+              <button type="button" class="btn btn-primary ask">b</button>
+              <button type="button" class="btn btn-primary ask">c</button>
+            </div>
+            <div>
+              <button type="button" class="btn btn-primary ask">a</button>
+              <button type="button" class="btn btn-primary ask">b</button>
+              <button type="button" class="btn btn-primary ask">c</button>
+            </div>
+            <div>
+              <button type="button" class="btn btn-primary ask">a</button>
+              <button type="button" class="btn btn-primary ask">b</button>
+              <button type="button" class="btn btn-primary ask">c</button>
+            </div>
+            <div>
+              <button type="button" class="btn btn-primary ask">a</button>
+              <button type="button" class="btn btn-primary ask">b</button>
+              <button type="button" class="btn btn-primary ask">c</button>
+            </div>
+            <div>
+              <button type="button" class="btn btn-primary ask">a</button>
+            </div>
+            <div>
+              <text id="ansWord" style="display: none"></text>
+            </div>
+          </div>
+          <button
+            id="true"
+            style="display: none"
+            type="button"
+            class="btn btn-primary"
+          >
+            True
+          </button>
+          <button
+            id="false"
+            style="display: none"
+            type="button"
+            class="btn btn-primary"
+          >
+            False
+          </button>
+          <button
+            id="next"
+            style="display: none"
+            type="button"
+            class="btn btn-primary"
+          >
+            Next
+          </button>
+        </div>
+      </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+  </body>
+</html>
+<script>
+  const problems_3 = [
+      ["(3*2)+6", "(2*5)-3", "(9/3)-1"],
+      ["(5*4)-2", "(6/2)+6", "(8/4)+4"],
+      ["(6*2)-7", "(4/4)+6", "(3*2)+1"],
+    ];
+
+    const problems_4 = [
+      ["(3*3)-4", "(1*3)+5", "(4*4)-1", "(2*6)+3"],
+      ["(2*3)+9", "(4/2)+5", "(3*5)-7", "(5*4)-1"],
+      ["(5*3)-4", "(6/2)+3", "(5*2)+4", "(2*3)+7"],
+    ];
+
+    const problems_5 = [
+      ["(4*4)-2", "(6/6)+5", "(4/2)-1", "(1*3)-2", "(2*5)-2"],
+      ["(5*2)-5", "(3*2)+3", "(4*4)+6", "(6/2)+3", "(8/2)-3"],
+      ["(7*1)-3", "(2*4)+9", "(6/3)+9", "(2/2)+4", "(2*5)-4"],
+    ];
+
+    const problems_6 = [
+      ["(5*6)-3", "(8/2)+6", "(9/3)+8", "(4*2)-1", "(1*6)+7", "(6*2)+5"],
+      ["(2*3)+5", "(3*4)-7", "(2*2)+9", "(8/4)+2", "(5*3)-4", "(5*2)-2"],
+      ["(9/3)+5", "(5*2)-4", "(3/3)+2", "(4*2)+6", "(2/2)+4", "(2*6)+7"],
+    ];
+
+    const word3 = [
+      ["ก", "ข"],
+      ["พ", "ห"],
+      ["ล", "ง"],
+    ];
+    const word4 = [
+      ["ก", "ข", "ผ"],
+      ["ก", "ข", "ผ"],
+      ["ก", "ข", "ผ"],
+    ];
+    const word5 = [
+      ["ก", "ข", "ก", "ข"],
+      ["ก", "ข", "ก", "ข"],
+      ["ก", "ข", "ก", "ข"],
+    ];
+    const word6 = [
+      ["ก", "ข", "ก", "ข", "ผ"],
+      ["ก", "ข", "ก", "ข", "ผ"],
+      ["ก", "ข", "ก", "ข", "ผ"],
+    ];
+    const word7 = [
+      ["ก", "ข", "ก", "ข", "ผ", "ห"],
+      ["ก", "ข", "ก", "ข", "ผ", "ฟ"],
+      ["ก", "ข", "ก", "ข", "ผ", "ฟ"],
+    ];
+
+    const problems_7 = [
+      [
+        "(8/2)-1",
+        "(6*4)-3",
+        "(4/4)+6",
+        "(6*4)-7",
+        "(6/6)+9",
+        "(2*6)+4",
+        "(4/2)+3",
+      ],
+      [
+        "(3*2)+5",
+        "(5*2)+4",
+        "(6*6)-8",
+        "(4*5)+7",
+        "(5/5)+5",
+        "(6*4)-1",
+        "(5*1)-2",
+      ],
+      [
+        "(2*3)-5",
+        "(2*5)-2",
+        "(2/2)+4",
+        "(5*6)-9",
+        "(6/3)+9",
+        "(6*5)+1",
+        "(3*4)-4",
+      ],
+    ];
+
+    const anser3 = [
+      ["12", "7", "5"],
+      ["19", "9", "7"],
+      ["5", "6", "7"],
+    ];
+    const anser4 = [
+      ["9", "10", "15", "13"],
+      ["18", "7", "8", ",15"],
+      ["11", "9", "11", "13"],
+    ];
+    const anser5 = [
+      ["14", "6", "1", "1", "5"],
+      ["10", "7", "18", "6", "1"],
+      ["4", "15", "14", "5", "10"],
+    ];
+    const anser6 = [
+      ["29", "10", "11", "9", "23", "17"],
+      ["11", "7", "13", "4", "11", "8"],
+      ["8", "4", "3", "19", "5", "21"],
+    ];
+    const anser7 = [
+      ["5", "19", "7", "14", "14", "20", "5"],
+      ["11", "14", "28", "27", "5", "23", "7"],
+      ["1", "8", "7", "29", "14", "31", "4"],
+    ];
+
+    var ansList3 = new Array(3).fill(null).map(() => new Array(3).fill(false));
+    var ansList4 = new Array(3).fill(null).map(() => new Array(4).fill(false));
+    var ansList5 = new Array(3).fill(null).map(() => new Array(5).fill(false));
+    var ansList6 = new Array(3).fill(null).map(() => new Array(6).fill(false));
+    var ansList7 = new Array(3).fill(null).map(() => new Array(7).fill(false));
+
+    var time3 = new Array(3).fill(0).map(() => new Array(3).fill(0));
+    var time4 = new Array(3).fill(0).map(() => new Array(4).fill(0));
+    var time5 = new Array(3).fill(0).map(() => new Array(5).fill(0));
+    var time6 = new Array(3).fill(0).map(() => new Array(6).fill(0));
+    var time7 = new Array(3).fill(0).map(() => new Array(7).fill(0));
+
+    var cancelToken = {};
+
+    var round = 0
+  $(document).ready(function () {
+    var clickCount = 0;  
+    $(".btn.btn-primary.ask").click(function () {
+      var buttonText = $(this).text();
+      $("#ansWord").text($("#ansWord").text() + " " + buttonText);
+      clickCount++; 
+      if (clickCount === 2) {
+        round = round+1
+        console.log(round)
+        if (round <= 2){
+          setProblems(problems_3, round, anser3, ansList3, word3, cancelToken);
+          clickCount = 0;
+        }else{
+          console.log(time3)
+        }
+      }
+    });
+  });
+
+  async function test1() {
+    $("#start").hide();
+    $("#solution1").html("เตรียมพร้อม");
+    await delay(500);
+    setProblems(problems_3, round, anser3, ansList3, word3, cancelToken);
+    $("#next")
+      .off("click")
+      .on("click", function () {
+        if (cancelToken.cancel) cancelToken.cancel();
+      });
+  }
+
+  async function setProblems(problems, i, anser, ansList, word, cancelToken) {
+    $("#askWord").hide();
+    $("#ansWord").hide();
+    $("#ansWord").text('')
+    $("#solution1").show();
+      for (let j = 0; j < problems[i].length; j++) {
+        $("#true")
+          .off("click")
+          .on("click", function () {
+            ansList[i][j] = true;
+            if (cancelToken.cancel) cancelToken.cancel();
+          });
+        $("#false")
+          .off("click")
+          .on("click", function () {
+            ansList[i][j] = false;
+            if (cancelToken.cancel) cancelToken.cancel();
+          });
+        $("#next").show();
+        $("#true").hide();
+        $("#false").hide();
+        $("#solution1").html(problems[i][j]);
+        await cancellableDelay(5000, cancelToken);
+        $("#solution1").html(anser[i][j]);
+        $("#next").hide();
+        $("#true").show();
+        $("#false").show();
+        await cancellableDelayWithStore(4000, cancelToken,time3[i][j]);
+        if (j < word.length - 1) {
+          $("#solution1").html(word[i][j]);
+          $("#true").hide();
+          $("#false").hide();
+          await delay(500);
+        }else{
+          $("#askWord").show();
+          $("#ansWord").show();
+          $("#true").hide();
+          $("#false").hide();
+          $("#solution1").hide();
+        }
+    }
+  }
+
+  function setAsnWord() {
+    $("#ansWord").html();
+  }
+
+  function delay(time) {
+    return new Promise((resolve) => setTimeout(resolve, time));
+  }
+
+  function cancellableDelay(ms, cancelToken) {
+    return Promise.race([
+      new Promise((resolve) => setTimeout(resolve, ms)),
+      new Promise((resolve) => (cancelToken.cancel = resolve)),
+    ]);
+  }
+
+  function cancellableDelayWithStore(ms, cancelToken, elapsedTimesArray) {
+    let startTime = Date.now();  // Capture the start time
+    return Promise.race([
+        new Promise((resolve) => setTimeout(() => {
+            let endTime = Date.now();
+            let elapsedTime = endTime - startTime;  
+            elapsedTimesArray = elapsedTime;   
+            resolve();
+        }, ms)),
+        new Promise((resolve) => {
+            cancelToken.cancel = () => {
+                let cancelTime = Date.now();
+                let elapsedTime = cancelTime - startTime;  
+                elapsedTimesArray = elapsedTime; 
+                resolve();
+            }
+        })
+    ]);
+}
+
+</script>

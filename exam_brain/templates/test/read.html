@@ -1,0 +1,162 @@
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+<script
+  src="https://code.jquery.com/jquery-3.7.1.slim.min.js"
+  integrity="sha256-kmHvs0B+OpCW5GVHUNjv9rOmY0IvSIRcf7zGUDTDQM8="
+  crossorigin="anonymous"
+></script>
+<html>
+  <head>
+    <title>Polls</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <nav class="navbar">
+        <div class="container-fluid"><a href="{% url 'index' %}">index</a></div>
+    </nav>
+  
+    <div
+      class="container d-flex justify-content-center align-items-center"
+      style="height: 100vh"
+    >
+
+      <div class="text-center">
+        <div id="start">
+          <button id="start_read" type="button" class="btn btn-primary" onclick="test_read()">
+            คลิกเพื่อเริ่มทดสอบ
+          </button>
+        </div>
+        <div id="board">
+          <div class="row">
+            <text id="solution2"></text>
+            <h1 id="current-value-questions"></h1>
+            <div id="ask-block" style="display: none">
+              <button type="button" class="btn btn-primary ask" id="current-value-1" onclick="keepChice(1)"></button>
+              <button type="button" class="btn btn-primary ask" id="current-value-2" onclick="keepChice(2)"></button>
+            </div>
+            <br>
+          <div>
+            <button id="end_read" type="button" class="btn btn-primary" style="display: none" onclick="showChoice()">เสร็จ</button>
+          </div>
+          <div>
+            <button id="next_read" type="button" class="btn btn-primary" style="display: none" onclick="showNextValue()">ต่อไป</button>
+          </div>
+          </div>
+          <button
+            id="true"
+            style="display: none"
+            type="button"
+            class="btn btn-primary"
+          >
+            True
+          </button>
+          <button
+            id="false"
+            style="display: none"
+            type="button"
+            class="btn btn-primary"
+          >
+            False
+          </button>
+          <button
+            id="next"
+            style="display: none"
+            type="button"
+            class="btn btn-primary"
+          >
+            Next
+          </button>
+        </div>
+      </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+  </body>
+</html>
+<script>
+  $(document).ready(function () {
+
+  });
+  
+  var keepChoice = []
+  var currentIndex = 0;
+  var questions = {{ data.questions|safe }}; 
+  var ask = {{ data.ask|safe }}; 
+  var arr =  {{ data.arr|safe }}; 
+  
+  function test_read() {
+    $("#start_read").hide();
+    showNextValue()
+ }
+
+  async function showNextValue() {
+    $("#next_read").hide();
+      if (currentIndex < questions.length) {
+        $("#current-value-questions").text("ข้อ "+[currentIndex+1])
+        await delay(500);
+        $("#current-value-questions").text(questions[currentIndex])
+        $("#end_read").show();
+      } else {
+          alert("END");
+      }
+  }
+
+  async function showChoice() {
+    $("#end_read").hide();
+    if (currentIndex < ask.length) {
+      $("#current-value-questions").text(ask[currentIndex])
+      $("#current-value-1").text(arr[currentIndex][0])
+      $("#current-value-2").text(arr[currentIndex][1])
+      $("#ask-block").show();
+    } else {
+        alert("END");
+    }
+}
+ 
+  function keepChice(index){
+    keepChoice[currentIndex] = index
+    console.log(keepChoice)
+    currentIndex++;
+    $("#current-value-questions").text("คุณสามารถพักได้ หรือ กดปุ่มด้ามล่างเพื่อทำข้อต่อไป")
+    $("#ask-block").hide();
+    $("#next_read").show();
+
+  }
+
+  function setAsnWord() {
+    $("#ansWord").html();
+  }
+
+  function delay(time) {
+    return new Promise((resolve) => setTimeout(resolve, time));
+  }
+
+  function cancellableDelay(ms, cancelToken) {
+    return Promise.race([
+      new Promise((resolve) => setTimeout(resolve, ms)),
+      new Promise((resolve) => (cancelToken.cancel = resolve)),
+    ]);
+  }
+
+  function cancellableDelayWithStore(ms, cancelToken, elapsedTimesArray) {
+    let startTime = Date.now();  
+    return Promise.race([
+        new Promise((resolve) => setTimeout(() => {
+            let endTime = Date.now();
+            let elapsedTime = endTime - startTime;  
+            elapsedTimesArray = elapsedTime;   
+            resolve();
+        }, ms)),
+        new Promise((resolve) => {
+            cancelToken.cancel = () => {
+                let cancelTime = Date.now();
+                let elapsedTime = cancelTime - startTime;  
+                elapsedTimesArray = elapsedTime; 
+                resolve();
+            }
+        })
+    ]);
+}
+
+</script>

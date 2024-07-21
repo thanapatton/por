@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Microphone Detection</title>
+</head>
+<body>
+    <h1>Microphone Detection</h1>
+    <button id="detectMic">Detect Microphone</button>
+    <p id="status"></p>
+
+    <script>
+        document.getElementById('detectMic').addEventListener('click', async () => {
+            const statusElement = document.getElementById('status');
+
+            try {
+                // Request access to the microphone
+                const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                
+                // Microphone access granted
+                statusElement.textContent = 'Microphone detected and access granted.';
+                
+                // Stop the audio stream to release the mic
+                stream.getTracks().forEach(track => track.stop());
+            } catch (err) {
+                // Error or no microphone found
+                if (err.name === 'NotAllowedError') {
+                    statusElement.textContent = 'Microphone access denied.';
+                } else if (err.name === 'NotFoundError') {
+                    statusElement.textContent = 'No microphone found.';
+                } else {
+                    statusElement.textContent = `Error: ${err.message}`;
+                }
+            }
+        });
+    </script>
+</body>
+</html>
