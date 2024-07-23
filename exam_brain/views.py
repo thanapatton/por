@@ -324,3 +324,10 @@ def voice_1(request):
     latest_question_list = ["a","b","c"]
     context = {'latest_question_list': latest_question_list}
     return render(request, 'test/voicerec.html', context)
+
+def speech(request):
+    latest_question_list = ["a","b","c"]
+    context = {'latest_question_list': latest_question_list}
+    return render(request, 'test/speech-to-text.html', context)
+    
+

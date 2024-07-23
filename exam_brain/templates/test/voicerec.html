@@ -17,7 +17,7 @@
             try {
                 // Request access to the microphone
                 const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-                
+                console.log(stream);
                 // Microphone access granted
                 statusElement.textContent = 'Microphone detected and access granted.';
                 

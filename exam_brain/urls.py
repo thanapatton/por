@@ -5,4 +5,5 @@ urlpatterns = [
     path('', views.index, name='index'),
     path('read/', views.readPage, name='read'),
     path('voice1/', views.voice_1, name='voice1'),
+    path('speech/', views.speech, name='speech'),
 ]
