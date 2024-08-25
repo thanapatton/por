@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Microphone Detection</title>
+    </head>
+    <body>
+        <p class="text"></p>
+        <button class="control record">MIC</button>
+        <script >
+            window.SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+            const recognition = new window.SpeechRecognition();
+            const btnEle = document.querySelector('.control');
+            console.log(btnEle);
+            function onClick(){
+                 const isPause = btnEle.classList.contains('record');
+                if(isPause){
+                    recognition.start();
+                    btnEle.classList.remove('record');
+                    btnEle.classList.add('pause');
+                } else {
+                    recognition.stop();
+                    btnEle.classList.add('record');
+                    btnEle.classList.remove('pause');
+                }
+
+                recognition.start();
+                
+            }
+            function onResult(event){
+                //event.results[0][0].transcript;
+                console.log(event.results);
+                const textElem = document.querySelector('.text');
+                const { transcript } = event.results[0][0]
+                textElem.innerText += " "+ transcript;
+                console.log(transcript);
+                
+            }
+            function onEnd(){
+                const isRecord = btnEle.classList.contains('pause');
+                if(isRecord){
+                    recognition.start();
+                } 
+               
+            }
+            function run(){
+                recognition.lang = 'th-TH'
+                recognition.addEventListener('result',onResult);
+                recognition.addEventListener('end',onEnd);
+                btnEle.addEventListener('click', onClick);
+            }
+            run();
+
+
+        </script>
+        <style>
+            .record,
+            .pause{ 
+                outline:none;
+                border:none;
+                cursor: pointer;
+
+                width: 100px;
+                heigh: 100px;
+
+                margin-bottom: 10%;
+            }
+
+            .pause {
+                --background: url('./pause.png') 0 0 / contain no-repeat;
+                background-color: red;
+            }
+
+            .record{
+                --background: url('./mic.png') 0 0 / contain no-repeat;
+                background-color: green;
+            } 
+
+        </style>
+    </body>
+
+</html>
