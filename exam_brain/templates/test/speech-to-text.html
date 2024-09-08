@@ -21,7 +21,7 @@
             {% comment %} <img style="display: none" id= "currentImage" src="{% static data.images.0 %}" />  {% endcomment %}
            
           </div>
-
+          
           <div class="row">
             <img  class ="center"style="display: none max-height: 500px; max-width:500px;" id= "dynamicImage" /> 
           </div>
@@ -34,12 +34,12 @@
       </div>
     </div>
 
-    {% comment %} <p class="text"></p>
-    <button class="control record">MIC</button> {% endcomment %}
+    <p class="text"></p>
+    <button style="display: none" class="control record">MIC</button>
     <script>
       window.SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition
       const recognition = new window.SpeechRecognition()
-      const btnEle = document.querySelector('.control')
+      {% comment %} const btnEle = document.querySelector('.control')
       function onClick() {
         const isPause = btnEle.classList.contains('record')
         if (isPause) {
@@ -53,7 +53,7 @@
         }
       
         recognition.start()
-      }
+      } {% endcomment %}
       function onResult(event) {
         //event.results[0][0].transcript;
         endTime = performance.now();  
@@ -76,17 +76,17 @@
         }
         console.log(transcript)
       }
-      function onEnd() {
+      {% comment %} function onEnd() {
         const isRecord = btnEle.classList.contains('pause')
         if (isRecord) {
           recognition.start()
         }
-      }
+      } {% endcomment %}
       function run() {
         recognition.lang = 'th-TH'
         recognition.addEventListener('result', onResult)
-        recognition.addEventListener('end', onEnd)
-        btnEle.addEventListener('click', onClick)
+        {% comment %} recognition.addEventListener('end', onEnd) {% endcomment %}
+        {% comment %} btnEle.addEventListener('click', onClick) {% endcomment %}
       }
       run()
 
