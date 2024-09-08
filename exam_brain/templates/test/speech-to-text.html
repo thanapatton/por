@@ -21,7 +21,7 @@
             {% comment %} <img style="display: none" id= "currentImage" src="{% static data.images.0 %}" />  {% endcomment %}
            
           </div>
-          
+
           <div class="row">
             <img  class ="center"style="display: none max-height: 500px; max-width:500px;" id= "dynamicImage" /> 
           </div>
@@ -34,8 +34,8 @@
       </div>
     </div>
 
-    <p class="text"></p>
-    <button class="control record">MIC</button>
+    {% comment %} <p class="text"></p>
+    <button class="control record">MIC</button> {% endcomment %}
     <script>
       window.SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition
       const recognition = new window.SpeechRecognition()
