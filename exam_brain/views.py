@@ -326,8 +326,28 @@ def voice_1(request):
     return render(request, 'test/voicerec.html', context)
 
 def speech(request):
-    latest_question_list = ["a","b","c"]
-    context = {'latest_question_list': latest_question_list}
+    images = [
+        "test/images/window.jpg",
+        "test/images/panda.jpg",
+        "test/images/cicada.jpg"
+    ]
+    
+    awnser = ["หน้าต่าง",
+              "แพนด้า",
+              "แมลงวัน"]
+    
+    context =  {'data':{'images': images,'awnser':awnser}}
     return render(request, 'test/speech-to-text.html', context)
+
+def test2(request):
+    images = [
+        "test/images/panda.jpg",
+        "static/test/images/panda.jpg",
+        "static/test/images/cicada.jpg"
+    ]
+    awnser = []
+    context = {'data':{'images': images,'awnser':awnser}}
+    return render(request, 'test/test2.html', context)
+    
     
 
