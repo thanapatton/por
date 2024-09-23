@@ -117,6 +117,7 @@
             var imageUrl = baseStaticUrl + imageName;
             document.getElementById('dynamicImage').src = imageUrl;
             $("#current-value-questions").text("ข้อ "+[currentIndex+1])
+            $("#dynamicImage").hide()
             await delay(500);
             $("#current-value-questions").text("ตอบคำถามด้วยการพูด แล้ว กดปุ่มด้ามล่างเพื่อทำข้อต่อไป")
             $("#dynamicImage").show()
