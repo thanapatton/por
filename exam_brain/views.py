@@ -350,7 +350,7 @@ def speech(request):
     context =  {'data':{'images': images,'awnser':awnser}}
     return render(request, 'test/speech-to-text.html', context)
 
-def test2(request):
+def exam4(request):
     images = [
         "test/images/window.jpg",
         "test/images/panda.jpg",
@@ -361,7 +361,7 @@ def test2(request):
               "แพนด้า",
               "แมลงวัน"]
     context = {'data':{'images': images,'awnser':awnser}}
-    return render(request, 'test/test2.html', context)
+    return render(request, 'test/exam4.html', context)
     # return render(request, 'test/test2 copy.html', context)
 
 
