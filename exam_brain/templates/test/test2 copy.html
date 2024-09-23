@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Speech to Text with No Speech Counter</title>
+    <style>
+        body { font-family: Arial, sans-serif; }
+        #result { margin-top: 20px; }
+    </style>
+</head>
+<body>
+    <h1>Speech to Text with No Speech Duration Counter</h1>
+    <button id="start">Start Recognition</button>
+    <button id="stop">Stop Recognition</button>
+    <p id="result">Transcription will appear here...</p>
+    <p id="noSpeechCount">No Speech Count: <span id="count">0</span></p>
+
+    <script>
+        if (!('webkitSpeechRecognition' in window)) {
+            alert("Your browser does not support the Web Speech API.");
+        } else {
+            const startButton = document.getElementById('start');
+            const stopButton = document.getElementById('stop');
+            const resultDisplay = document.getElementById('result');
+            const countDisplay = document.getElementById('count');
+
+            const recognition = new webkitSpeechRecognition();
+            recognition.continuous = true;
+            recognition.interimResults = true;
+            recognition.lang = 'th-TH';
+
+            let recognizing = false;
+            let noSpeechCounter = 0;
+            let noSpeechDuration = 0; // Duration in milliseconds
+            const checkInterval = 100; // Check every 100ms
+
+            // Handle speech recognition results
+            recognition.onresult = (event) => {
+                let finalTranscript = '';
+                for (let i = event.resultIndex; i < event.results.length; ++i) {
+                    if (event.results[i].isFinal) {
+                        finalTranscript += event.results[i][0].transcript + ' ';
+                    }
+                }
+                resultDisplay.innerHTML = finalTranscript; // Display the final result
+                noSpeechCounter = 0; // Reset counter on speech
+                noSpeechDuration = 0; // Reset duration on speech
+            };
+
+            // Monitor for no speech duration
+            setInterval(() => {
+                if (recognizing) {
+                    noSpeechDuration += checkInterval;
+
+                    if (noSpeechDuration > 2000) {
+                        noSpeechCounter += 1;
+                        countDisplay.innerHTML = noSpeechCounter; // Update the display
+                        noSpeechDuration = 0; // Reset the duration counter
+                    }
+                }
+            }, checkInterval);
+
+            // Error handling
+            recognition.onerror = (event) => {
+                console.error("Error occurred in recognition: " + event.error);
+            };
+
+            // Start button
+            startButton.addEventListener('click', () => {
+                if (!recognizing) {
+                    recognition.start(); // Start the recognition
+                    recognizing = true;
+                    console.log("Recognition started");
+                }
+            });
+
+            // Stop button
+            stopButton.addEventListener('click', () => {
+                if (recognizing) {
+                    recognition.stop(); // Stop the recognition
+                    recognizing = false;
+                    console.log("Recognition stopped");
+                }
+            });
+        }
+    </script>
+</body>
+</html>

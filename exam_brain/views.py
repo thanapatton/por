@@ -1,4 +1,8 @@
+from django.http import JsonResponse
 from django.shortcuts import render
+from pythainlp.tokenize import sent_tokenize
+from pythainlp.tokenize import word_tokenize
+import json
 
 from .models import Question
 
@@ -6,6 +10,13 @@ def index(request):
     latest_question_list = ["a","b","c"]
     context = {'latest_question_list': latest_question_list}
     return render(request, 'test/index.html', context)
+
+def thai_sent_tokenize_view(request):
+    text = request.GET.get('text', '')
+    if text:
+        sentences = sent_tokenize(text)
+        return JsonResponse({'sentences': sentences})
+    return JsonResponse({'error': 'No text provided'}, status=400)
 
 
 def readPage(request):
@@ -341,13 +352,25 @@ def speech(request):
 
 def test2(request):
     images = [
+        "test/images/window.jpg",
         "test/images/panda.jpg",
-        "static/test/images/panda.jpg",
-        "static/test/images/cicada.jpg"
+        "test/images/cicada.jpg"
     ]
-    awnser = []
+    
+    awnser = ["หน้าต่าง",
+              "แพนด้า",
+              "แมลงวัน"]
     context = {'data':{'images': images,'awnser':awnser}}
     return render(request, 'test/test2.html', context)
+    # return render(request, 'test/test2 copy.html', context)
+
+
+def word_tokenizer(request):
+    if request.method == 'POST':
+        data = json.loads(request.body)
+        user_input = data.get('data')
+        response_message = word_tokenize(user_input)
+        return JsonResponse({'message': response_message}) 
     
     
 
