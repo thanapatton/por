@@ -1,0 +1,288 @@
+{% load static %}
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.7.1.slim.min.js" integrity="sha256-kmHvs0B+OpCW5GVHUNjv9rOmY0IvSIRcf7zGUDTDQM8=" crossorigin="anonymous"></script>
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <title>Exam4</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+      }
+      .time {
+        font-weight: bold;
+        color: green;
+      }
+      .no-speech {
+        color: red;
+        font-weight: bold;
+      }
+      .center {
+        display: block;
+        margin-left: auto;
+        margin-right: auto;
+        width: 50%;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Exam4</h1>
+    <div class="container d-flex justify-content-center align-items-center" style="height: 100vh">
+      <div class="text-center">
+        <div id="start">
+          <button id="start_read" type="button" class="btn btn-primary" onclick="testExam4()">คลิกเพื่อเริ่มทดสอบ</button>
+        </div>
+        <div id="board">
+          <div class="row">
+            <h1 id="current-value-questions"></h1>
+            {% comment %} <img style="display: none" id="currentImage" src="{% static data.images.0 %}" /> {% endcomment %}
+          </div>
+          <div id="onTime">
+            <div class="row">
+              <img class="center" style="display: none max-height: 500px; max-width:500px;" id="dynamicImage" />
+            </div>
+            <div>
+              <button id="next_read" type="button" class="btn btn-primary" style="display: none" onclick="showNextValue()">ต่อไป</button>
+            </div>
+
+            <div id="recordResult" style="display: none">
+              {% comment %} <button id="start-btn">Start Speech Recognition</button>
+              <button id="stop-btn" disabled>Stop</button> {% endcomment %}
+
+              <p>
+                <strong>Recognized Text:</strong>
+              </p>
+              <p id="result-text"></p>
+
+              <p id="noSpeechCount" style="display: none">
+                No Speech Count: <span id="count">0</span>
+              </p>
+              <p id="noSpeechCountSum">
+                No Speech Count Sum: <span id="countSum" class="no-speech">0</span>
+              </p>
+              <p>
+                <strong>Word Recognized :</strong>
+              </p>
+              <p id="responseText"></p>
+            </div>
+          </div>
+        </div>
+        <div style="display: none" id="endExam4">
+          <div id="board">
+            <div class="row">
+              <h1 id="current-value-questions"></h1>
+              {% comment %} <img style="display: none" id="currentImage" src="{% static data.images.0 %}" /> {% endcomment %}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+    var currentIndex = 0;
+    var images = {{ data.images|safe }} ;
+    var awnser = {{ data.awnser|safe }} ;
+    var baseStaticUrl = "{% static '' %}";
+    var wordRegResult = '';
+    let isSave = false;
+    let recognizing = false;
+    let messageResult = ''
+    var keepChoice = [];
+    let noSpeechCounter = 0;
+    let sumNoSpeechCount = 0;
+    //--------------------------------------------------------------------------------------------
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    const recognition = new SpeechRecognition();
+
+    recognition.lang = 'th-TH'; 
+    recognition.interimResults = false; 
+    recognition.maxAlternatives = 1; 
+    recognition.continuous = true;  // Keep listening even after a pause
+
+
+    let noSpeechDuration = 0; // Duration in milliseconds
+
+    
+    const checkInterval = 100; // Check every 100ms
+    
+
+    const startBtn = document.getElementById('start-btn');
+    const stopBtn = document.getElementById('stop-btn');
+    const resultText = document.getElementById('result-text');
+    const recordTime = document.getElementById('record-time');
+    const countDisplay = document.getElementById('count');
+    const countSumDisplay = document.getElementById('countSum');
+
+
+    function testExam4() {
+        $("#start_read").hide();
+        $("#recordResult").show();
+        showNextValue() 
+    }
+
+    async function showNextValue() {
+        if(isSave){
+          keepChice(currentIndex,messageResult,wordRegResult,sumNoSpeechCount)
+        }
+        if (!recognizing) {
+          recognition.start(); // Start the recognition
+          recognizing = true;
+          console.log("Recognition started");
+        }
+        $("#next_read").hide();
+        {% comment %} recognition.start(); {% endcomment %}
+        
+          if (currentIndex < images.length) {
+            imageName = images[currentIndex];
+            var imageUrl = baseStaticUrl + imageName;
+            document.getElementById('dynamicImage').src = imageUrl;
+            $("#current-value-questions").text("ข้อ "+[currentIndex+1])
+            $("#dynamicImage").hide()
+            $("#onTime").hide();
+            await delay(500);
+            $("#current-value-questions").text("ตอบคำถามด้วยการพูด แล้ว กดปุ่มด้ามล่างเพื่อทำข้อต่อไป")
+            $("#dynamicImage").show()
+            $("#onTime").show();
+          } else {
+            $("#onTime").hide();
+            $("#endExam4").show();
+            recognition.stop();
+            $("#current-value-questions").text("END")
+            
+          }
+      }
+      
+      function delay(time) {
+        return new Promise((resolve) => setTimeout(resolve, time));
+      }
+  
+  
+      // ---------------------------------------------------
+    
+
+      
+      function keepChice(index,text,wordReg,sumNoSpeech){
+        let jsonResult = {
+          message: text,
+          wordReg: wordReg,
+          sumNoSpeech: sumNoSpeech
+        }
+        keepChoice[currentIndex] = JSON.stringify(jsonResult)
+        console.log(keepChoice)
+        messageResult = '' 
+        wordRegResult = ''
+        noSpeechCounter = 0;
+        sumNoSpeechCount = 0;
+        resultText.textContent = ''
+        document.getElementById('responseText').innerText =  wordRegResult;
+        countSumDisplay.innerHTML = sumNoSpeechCount;
+        countDisplay.innerHTML = noSpeechCounter;
+        currentIndex++;
+      }
+
+      // Start speech recognition
+      {% comment %} startBtn.addEventListener('click', () => {
+        console.log("xxxxx")
+        if (!recognizing) {
+          recognition.start(); // Start the recognition
+          recognizing = true;
+          console.log("Recognition started");
+        }
+        startBtn.disabled = true;
+        stopBtn.disabled = false;
+        resultText.textContent = "Listening...";
+
+      });
+
+      // Stop speech recognition
+      stopBtn.addEventListener('click', () => {
+        recognition.stop();
+        startBtn.disabled = false;
+        stopBtn.disabled = true;
+      }); {% endcomment %}
+
+      // Monitor for no speech duration
+      setInterval(() => {
+        if (recognizing) {
+            noSpeechDuration += checkInterval;
+
+            if (noSpeechDuration > 2000) {
+                noSpeechCounter += 1;
+                countDisplay.innerHTML = noSpeechCounter; // Update the display
+                noSpeechDuration = 0; // Reset the duration counter
+            }
+        }
+      }, checkInterval);
+
+
+      // Handle speech recognition result
+      recognition.addEventListener('result', (event) => {
+        if(noSpeechCounter > 0 ){
+          console.log("gggggg")
+          sumNoSpeechCount +=1 ;
+          countSumDisplay.innerHTML = sumNoSpeechCount;
+        }
+        const transcript = event.results[event.results.length - 1][0].transcript;
+        messageResult += transcript;
+        resultText.textContent = messageResult;
+        word_tokenize_api(messageResult);
+
+        noSpeechCounter = 0; // Reset counter on speech
+        noSpeechDuration = 0; // Reset duration on speech
+        isSave = true;
+        $("#next_read").show();
+        
+      });
+      // Handle recognition errors
+      recognition.addEventListener('error', (event) => {
+        console.error('Speech recognition error: ' + event.error);
+        resultText.textContent = "Error: " + event.error;
+        startBtn.disabled = false;
+        stopBtn.disabled = true;
+      });
+
+      function word_tokenize_api(userInput){
+         // Sending data to Django using fetch
+         fetch('/exam/word-tokenize/', {
+          method: 'POST',
+          headers: {
+              'Content-Type': 'application/json',
+              'X-CSRFToken':  getCookie('csrftoken')  // Django CSRF token for security
+          },
+          body: JSON.stringify({
+              data: userInput
+          })
+         })
+        .then(response => response.json())
+        .then(data => {
+            wordRegResult =  data.message;
+            document.getElementById('responseText').innerText =  wordRegResult;
+        })
+        .catch((error) => {
+          console.error('Error:', error);
+        });
+      }
+
+
+    // Get CSRF token from the cookie
+    function getCookie(name) {
+      let cookieValue = null;
+      if (document.cookie && document.cookie !== '') {
+          const cookies = document.cookie.split(';');
+          for (let i = 0; i < cookies.length; i++) {
+              const cookie = cookies[i].trim();
+              // Check if this cookie string begins with the name we want
+              if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                  cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                  break;
+              }
+          }
+      }
+      return cookieValue;
+    }
+  </script>
+  </body>
+</html>
