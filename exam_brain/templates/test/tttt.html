@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Math Quiz Game</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      padding: 50px;
+    }
+    .game-container {
+      max-width: 800px;
+      margin: 0 auto;
+    }
+    .bitmap {
+      width: 100px;
+      height: 100px;
+    }
+    .quiz-section {
+      margin-top: 20px;
+    }
+    .result-section {
+      margin-top: 20px;
+      display: none;
+    }
+    button {
+      padding: 10px;
+      margin-top: 20px;
+    }
+    .answer-button {
+      padding: 10px;
+      margin: 10px;
+      display: inline-block;
+    }
+  </style>
+</head>
+<body>
+
+<div class="game-container">
+  <h1 id="loading-text">กรุณารอสักครู่</h1>
+  <div class="quiz-section" style="display: none;">
+    <h2 id="math-question">คำถามคณิตศาสตร์</h2>
+    <div id="answer-buttons"></div>
+    <button id="next-button" style="display: none;">ถัดไป</button>
+  </div>
+  <div class="result-section">
+    <h3 id="result-text"></h3>
+    <img id="result-bitmap" class="bitmap" src="" alt="Result">
+  </div>
+</div>
+
+<script>
+  // Game Options
+  const options = {
+    resolution: { width: 1000, height: 800 },
+    startButtonText: "คลิกเพื่อเริ่มแบบทดสอบ",
+    loadingText: "กรุณารอสักครู่",
+    mouse: true
+  };
+
+  // Bitmaps and resources
+  const bitmaps = {
+    correct: "true.png",  // Replace with actual path to correct answer image
+    wrong: "false.png",   // Replace with actual path to wrong answer image
+    next: "next.png"      // Replace with actual path for next button image
+  };
+
+  const tables = {
+    three: [
+      ["(3*2)+6", "12", "7", "5", "ha", "na", "qa"],
+      ["(5*4)-2", "19", "9", "7", "qa", "ja", "ya"],
+      ["(6*2)-7", "5", "6", "7", "ra", "ka", "la"]
+    ]
+  };
+
+  let currentTaskIndex = 0;
+  let currentCorrectAnswer = "";
+
+  // DOM Elements
+  const loadingText = document.getElementById('loading-text');
+  const mathQuestion = document.getElementById('math-question');
+  const answerButtons = document.getElementById('answer-buttons');
+  const nextButton = document.getElementById('next-button');
+  const resultText = document.getElementById('result-text');
+  const resultBitmap = document.getElementById('result-bitmap');
+  const quizSection = document.querySelector('.quiz-section');
+  const resultSection = document.querySelector('.result-section');
+
+  // Simulate loading
+  setTimeout(() => {
+    loadingText.style.display = 'none';
+    quizSection.style.display = 'block';
+    displayTask(currentTaskIndex);
+  }, 2000);  // Show loading for 2 seconds
+
+  function displayTask(index) {
+    if (index >= tables.three.length) {
+      // End of quiz
+      mathQuestion.textContent = 'แบบทดสอบเสร็จสิ้น!';
+      nextButton.style.display = 'none';
+      return;
+    }
+
+    // Display the math question
+    const task = tables.three[index];
+    mathQuestion.textContent = `โจทย์เลข: ${task[0]}`;
+    currentCorrectAnswer = task[1];
+
+    // Display answer options
+    answerButtons.innerHTML = '';
+    for (let i = 1; i <= 3; i++) {
+      const answer = task[i + 1];
+      const answerButton = document.createElement('button');
+      answerButton.classList.add('answer-button');
+      answerButton.textContent = answer;
+      answerButton.onclick = () => checkAnswer(answer);
+      answerButtons.appendChild(answerButton);
+    }
+
+    nextButton.style.display = 'none';
+  }
+
+  function checkAnswer(selectedAnswer) {
+    if (selectedAnswer === currentCorrectAnswer) {
+      showResult(true);
+    } else {
+      showResult(false);
+    }
+  }
+
+  function showResult(isCorrect) {
+    nextButton.style.display = 'block';
+    answerButtons.innerHTML = '';
+
+    if (isCorrect) {
+      resultText.textContent = 'ถูกต้อง!';
+      resultBitmap.src = bitmaps.correct;
+    } else {
+      resultText.textContent = 'ผิด!';
+      resultBitmap.src = bitmaps.wrong;
+    }
+
+    resultSection.style.display = 'block';
+    nextButton.onclick = () => nextTask();
+  }
+
+  function nextTask() {
+    currentTaskIndex++;
+    resultSection.style.display = 'none';
+    displayTask(currentTaskIndex);
+  }
+
+</script>
+
+</body>
+</html>

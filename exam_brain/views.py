@@ -4,12 +4,18 @@ from pythainlp.tokenize import sent_tokenize
 from pythainlp.tokenize import word_tokenize
 import json
 
+from exam_brain.email import send_test_email
+from exam_brain.firebase import insert_data_to_firebase
+
 from .models import Question
 
 def index(request):
+    return render(request, 'test/index.html')
+
+def exam1(request):
     latest_question_list = ["a","b","c"]
     context = {'latest_question_list': latest_question_list}
-    return render(request, 'test/index.html', context)
+    return render(request, 'test/test1.html', context)
 
 def thai_sent_tokenize_view(request):
     text = request.GET.get('text', '')

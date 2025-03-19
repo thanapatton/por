@@ -11,6 +11,8 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 """
 
 from pathlib import Path
+import firebase_admin
+from firebase_admin import credentials, db
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -122,3 +124,16 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = 'tonkungman@gmail.com'
+EMAIL_HOST_PASSWORD = 'jaru poej xoqx wmop'
+
+# Initialize the Firebase app
+cred = credentials.Certificate("./porr-b208a-firebase-adminsdk-iasqr-99e22b9a97.json")
+firebase_admin.initialize_app(cred, {
+    "databaseURL": "https://porr-b208a-default-rtdb.asia-southeast1.firebasedatabase.app/"
+})
